@@ -1,0 +1,214 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>指针常量和常量指针 | 张博杰的个人博客</title>
+<link rel="shortcut icon" href="https://zhangbojie-cn.github.io/favicon.ico?v=1673157999336">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhangbojie-cn.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="指针常量和常量指针 | 张博杰的个人博客 - Atom Feed" href="https://zhangbojie-cn.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="指针常量
+
+指针常量是一个常量，即指针本身是一个常量
+const关键字修饰在“ * ”右边就可以表示一个指针常量，并且在声明时就必须初始化，例如： int * const pc = &amp;num
+指针常量所指向的地址是不可以修改的，但是..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://zhangbojie-cn.github.io">
+  <img class="avatar" src="https://zhangbojie-cn.github.io/images/avatar.png?v=1673157999336" alt="">
+  </a>
+  <h1 class="site-title">
+    张博杰的个人博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              指针常量和常量指针
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-01-08
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="指针常量">指针常量</h2>
+<blockquote>
+<p>指针常量是一个常量，即指针本身是一个常量</p>
+<p>const关键字修饰在“ * ”右边就可以表示一个指针常量，并且在声明时就必须初始化，例如： int * const pc = &amp;num</p>
+<p>指针常量所指向的地址是不可以修改的，但是可以使用解引用方式修改所指向的具体的数据。</p>
+</blockquote>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(int argc, char const *argv[])
+{
+    // 声明两个int类型变量并初始化
+    int a = 20, b = 10;
+    // 声明一个指针常量ptr并初始化
+    int * const ptr = &amp;a;
+    // 指针常量所指向的地址是不可以修改的
+    ptr = &amp;b; // 错误
+    // 指针常量所指向的具体的内容可以通过解引用方式修改
+    *ptr = 22; // 正确
+    return 0;
+}
+</code></pre>
+<h2 id="常量指针">常量指针</h2>
+<blockquote>
+<p>常量指针本质上是一个指针</p>
+<p>被const修饰指针变量就是一个常量指针，例如: const int * num = 100</p>
+<p>常量指针所指向对象的数据不可以通过解引用的方式修改，但是它指向的地址是可以重新指定的。</p>
+</blockquote>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(int argc, char const *argv[])
+{
+   	// 定义一个int类型的变量num
+    int num = 10;
+    // 定义一个int类型的常量cnum
+    const int cnum = 10;
+    // 定义一个常量指针, 并初始化为&amp;num;
+    const int * pc = &amp;num;
+    // 1、常量指针本质是一个指针变量，其指向可以被正常修改
+    pc = &amp;cnum; // 正确
+    // 2、常量指针所指向的数据不管是常量cnum或是变量num都不可以通过对指针解引用的方式修改
+	*pc = 100; // 错误
+    return 0;
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F">指针常量</a></li>
+<li><a href="#%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88">常量指针</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://zhangbojie-cn.github.io/jvm-yun-xing-shi-shu-ju-qu-jvm-runtime-data-areas/">
+              <h3 class="post-title">
+                JVM运行时数据区（JVM Runtime Data Areas）
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://zhangbojie-cn.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

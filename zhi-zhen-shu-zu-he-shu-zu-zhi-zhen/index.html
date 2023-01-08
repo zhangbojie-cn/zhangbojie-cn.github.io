@@ -1,0 +1,208 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>指针数组和数组指针 | 张博杰的个人博客</title>
+<link rel="shortcut icon" href="https://zhangbojie-cn.github.io/favicon.ico?v=1673157999336">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhangbojie-cn.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="指针数组和数组指针 | 张博杰的个人博客 - Atom Feed" href="https://zhangbojie-cn.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="指针数组
+
+指针数组是一个数组，数组中的每个元素存放的是一个指针类型的元素
+
+#include &lt;stdio.h&gt;
+
+int main(int argc, char const *argv[])
+{
+
+    int a = 1..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://zhangbojie-cn.github.io">
+  <img class="avatar" src="https://zhangbojie-cn.github.io/images/avatar.png?v=1673157999336" alt="">
+  </a>
+  <h1 class="site-title">
+    张博杰的个人博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              指针数组和数组指针
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-01-08
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="指针数组">指针数组</h2>
+<blockquote>
+<p>指针数组是一个数组，数组中的每个元素存放的是一个指针类型的元素</p>
+</blockquote>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(int argc, char const *argv[])
+{
+
+    int a = 10, b = 20, c = 30;
+    int * num[3] = { &amp;a, &amp;b, &amp;c };
+    for (int i = 0; i &lt; 3; i++)
+    {
+        printf(&quot;num[%d] = %d\n&quot;, i, *num[i]);
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="数组指针">数组指针</h2>
+<blockquote>
+<p>数组指针是一个指针，该指针指向一个数组</p>
+</blockquote>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(int argc, char const *argv[])
+{
+    int arr[3] = {10, 20, 30};
+    int (* arr_ptr) [3] = &amp;arr;
+    printf(&quot;arr : %p, &amp;arr : %p, &amp;arr[0] = %p, arr_ptr = %p\n&quot;, arr, &amp;arr, &amp;arr[0], arr_ptr);
+    printf(&quot;arr+1 : %p, &amp;arr+1 : %p, &amp;arr[0]+1 = %p, arr_ptr+1 = %p\n&quot;, arr+1, &amp;arr+1, &amp;arr[0]+1, arr_ptr+1);
+    return 0;
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84">指针数组</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88">数组指针</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://zhangbojie-cn.github.io/zhi-zhen-chang-liang-he-chang-liang-zhi-zhen/">
+              <h3 class="post-title">
+                指针常量和常量指针
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://zhangbojie-cn.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,380 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JVM运行时数据区（JVM Runtime Data Areas） | 张博杰的个人博客</title>
+<link rel="shortcut icon" href="https://zhangbojie-cn.github.io/favicon.ico?v=1673157999336">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://zhangbojie-cn.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="JVM运行时数据区（JVM Runtime Data Areas） | 张博杰的个人博客 - Atom Feed" href="https://zhangbojie-cn.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="JVM运行时数据区（JVM Runtime Data Areas）
+
+JAVA虚拟机在执行JAVA程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，已经创建和销毁的时间，由的区域随着虚拟机进程的启动而创建，有..." />
+    <meta name="keywords" content="JAVA" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://zhangbojie-cn.github.io">
+  <img class="avatar" src="https://zhangbojie-cn.github.io/images/avatar.png?v=1673157999336" alt="">
+  </a>
+  <h1 class="site-title">
+    张博杰的个人博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              JVM运行时数据区（JVM Runtime Data Areas）
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-01-08
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+                <a href="https://zhangbojie-cn.github.io/Vt1FlLEs7/" class="post-tag">
+                  # JAVA
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://zhangbojie-cn.github.io/post-images/jvm-yun-xing-shi-shu-ju-qu-jvm-runtime-data-areas.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="jvm运行时数据区jvm-runtime-data-areas">JVM运行时数据区（JVM Runtime Data Areas）</h1>
+<blockquote>
+<p><strong>JAVA虚拟机在执行JAVA程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，已经创建和销毁的时间，由的区域随着虚拟机进程的启动而创建，有些区域则是依赖于用户线程的启动和结束而建立和销毁。根据JAVA虚拟机规范规定，JAVA虚拟机所管理的内存将会被分为: program counter（程序计数器）、java virtual machine stack（JAVA虚拟机栈）、native method stack（本地方法栈）、heap（堆）、method area（方法区）、runtime contanst pool（运行时常量池）。</strong></p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://zhangbojie-cn.github.io/post-images/1673155888225.png" alt="" loading="lazy"></figure>
+<h4 id="program-counter程序计数器">program counter（程序计数器）</h4>
+<p>程序计数器是一块较小的内存空间，它用来存储当前正在执行的JAVA虚拟机的字节码指令的地址。由于JAVA虚拟机的多线程是通过处理器轮流切换的方式实现的，在任何一个确定的时刻，一个处理器只会执行一个线程中的指令。因此为了上下文切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各线程之间互不影响，独立存储，所以程序计数器是线程私有的一块内存。既然是私有的那么该块内存则跟随线程的创建而创建、结束而销毁。</p>
+<p>如果线程正在执行的是一个JAVA方法，这个计数器存储的是正在执行的JAVA虚拟机字节码指令的地址，如果执行的是Natvie方法，这个计数器中存储的值为Undefined，并且这块内存区域是唯一一个在JAVA虚拟机规范中没有规定有任何OutOfMemoryError情况的区域。</p>
+<h4 id="java-virtual-machine-stackjava虚拟机栈">java virtual machine stack（JAVA虚拟机栈）</h4>
+<p>与程序计数器一样，JAVA虚拟机栈也是线程私有的，他的生命周期与JAVA线程相同。并且一个JAVA虚拟机栈中每调用一个方法都会创建一个栈帧，方法被调用直到执行完成的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<p>JAVA虚拟机规范中，对这个区域规定了两种异常状况：</p>
+<ul>
+<li>如果一个线程中调用方法的深度超过虚拟机所允许的深度，将抛出StackOverflowError异常；</li>
+<li>如果JAVA虚拟机栈可以动态扩展，并尝试扩展时没有足够的内存可以实现扩展，或者没有足够的内存可以为新的线程创建初始的虚拟机栈，则会抛出OutOfMemoryError异常</li>
+</ul>
+<p><strong>模拟抛出StackOverflowError异常</strong></p>
+<p>要模拟JAVA虚拟机栈溢出，可以通过无限递归调用来实现，因为JAVA虚拟机线程栈中调用一个方法就会创建一个栈帧，如果创建的栈帧的深度超过JAVA虚拟机栈所允许的的深度就会抛出该异常</p>
+<pre><code class="language-java">package com.example.jvm.outofmemory.javaVirtualMachineStack;
+
+/**
+ * @author zhangbojie
+ * @create 2022-12-15
+ **/
+public class StackOverflowErrorTest {
+    
+    public void m() {
+        m(); // 递归调用m方法
+    }
+
+    public static void main(String[] args) {
+        StackOverflowErrorTest j = new StackOverflowErrorTest();
+        j.m();
+    }
+
+}
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://zhangbojie-cn.github.io/post-images/1673155911037.png" alt="" loading="lazy"></figure>
+<h5 id="栈帧">栈帧</h5>
+<p>每个方法被执行的时候都会在JAVA虚拟机栈中同时创建一个栈帧，栈帧用于存储<strong>局部变量表、操作数栈、动态链接、方法出口</strong>等信息。栈帧随着方法的调用而创建，随着方法的结束而销毁（无论是方法正常完成还是异常完成（抛出了在方法内未被捕获的异常）都算作方法结束）</p>
+<ul>
+<li>局部变量表</li>
+</ul>
+<p>​	每个栈帧内部都包含一个局部变量表，栈帧中局部变量表的长度由编译器决定，并存储在类或接口的二进制表示中。一个局部变量可以保存类型为boolean、byte、char、short、int、float、reference或returnAddress的数据，两个局部变量可以保存类型为long或double的数据。局部变量使用索引访问，首个局部变量表的索引值为0。局部变量的索引值是个整数，它大于等于0，且小于局部变量表的长度。</p>
+<ul>
+<li>操作数栈</li>
+</ul>
+<p>​	每个栈帧的内部都包含一个称为操作数栈的先进后出的数据结构，栈帧中操作数栈的最大深度由编译器决定。栈帧在刚刚创建时，操作数栈是空的，JAVA虚拟机提供一些字节码指令来从局部变量表或对象实例的字段中赋值常量或变量值到操作数栈中。也提供了一些指令用于从操作数栈中取都数据、操作数据以及把结果再次入栈。在任意时刻，操作数栈都会有一个确定的栈深度，一个long或double类型的数据会占用两个单位的栈深度，其他类型的数据则占用一个单位的栈深度。</p>
+<ul>
+<li>动态链接</li>
+</ul>
+<p>​	每个栈帧内部都包含一个指向当前方法所在类型的运行时常量池的引用，以便对当前方法的代码实现动态链接。</p>
+<ul>
+<li>
+<p>方法出口</p>
+<ul>
+<li>
+<p>正常完成</p>
+<p>方法调用正常完成是指在方法执行过程中，没有抛出任何异常，包括直接从JAVA虚拟机抛出的异常以及在执行时通过throw语句显示抛出的异常。如果当前方法调用正常完成，它很可能会返回一个值给调用者。方法正常完成发生在一个方法执行过程中遇到了方法返回的字节码指令，使用哪种返回指令取决于方法返回值的数据类型。当前栈帧执行完成后还承担着恢复调用者状态的责任，包括恢复调用者的局部变量表和操作数栈，以及正确的递增程序计数器。被调用方法的返回值被压入调用者栈帧的操作数栈后，会继续正常执行。</p>
+</li>
+<li>
+<p>异常完成</p>
+<p>方法调用异常完成是值在方法的执行过程中，某写指令导致了JAVA虚拟机抛出异常，并且虚拟机抛出的异常在该方法中没有办法处理，或在执行过程中遇到了athrow字节码指令并显示的抛出异常，同时在该方法内部没有捕获异常。如果方法异常调用完成，那一定不会有方法返回值返回给其他调用者。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>代码分析示例</strong></p>
+<ul>
+<li>分析控制台为什么什么输出10</li>
+</ul>
+<pre><code class="language-java">package com.example.jvm.jvmInstruction;
+
+/**
+ * @author zhangbojie
+ * @create 2022-12-16 17:22
+ **/
+public class Demo01 {
+
+    public static void main(String[] args) {
+        int i = 10;
+        i = i++;
+        System.out.println(i); // i = 10
+    }
+
+}
+</code></pre>
+<pre><code class="language-java"> 0 bipush 10 // 将10这个值压入操作数栈中,10目前在操作数栈的栈顶位置
+ 2 istore_1 // 从栈顶取出10并放入到局部变量表的索引值为1的位置上，也就是将10赋值给i变量，这时操作数栈为空栈
+ 3 iload_1 // 将局部变量表索引为1的位置上的值压入栈中
+ 4 iinc 1 by 1 // 操作局部变量表索引位置为1的值加上1，此时局部变量表的i=11，操作数栈中的值为10
+ 7 istore_1 // 从栈顶取出10并赋值给局部变量表索引位置为1的变量，这时局部变量表中已经被自增过的i变量又被赋值为10
+ 8 getstatic #2 &lt;java/lang/System.out : Ljava/io/PrintStream;&gt;
+11 iload_1
+12 invokevirtual #3 &lt;java/io/PrintStream.println : (I)V&gt;
+15 return
+</code></pre>
+<ul>
+<li>分析控制台为什么输出11</li>
+</ul>
+<pre><code class="language-java">package com.example.jvm.jvmInstruction;
+
+/**
+ * @author zhangbojie
+ * @create 2022-12-16 17:22
+ **/
+public class Demo02 {
+
+    public static void main(String[] args) {
+        int i = 10;
+        i = ++i;
+        System.out.println(i); // i = 11
+    }
+
+}
+</code></pre>
+<pre><code class="language-java"> 0 bipush 10 // 将10这个值压入操作数栈中,10目前在操作数栈的栈顶位置
+ 2 istore_1 // 从栈顶取出10并放入到局部变量表的索引值为1的位置上，也就是将10赋值给i变量，这时操作数栈为空栈
+ 3 iinc 1 by 1 // 操作局部变量表索引位置为1的值加上1，此时局部变量表的i=11
+ 6 iload_1 // 将局部变量表索引为1的位置上的值压入栈中，此时栈顶的数据为11
+ 7 istore_1 // 从栈顶取出11并放入到局部变量表的索引值为1的位置上，也就是将11赋值给i变量，这时操作数栈为空栈
+ 8 getstatic #2 &lt;java/lang/System.out : Ljava/io/PrintStream;&gt;
+11 iload_1
+12 invokevirtual #3 &lt;java/io/PrintStream.println : (I)V&gt;
+15 return
+</code></pre>
+<p>通过以上两个小栗子，并理解就可以更清晰的认识JAVA虚拟机栈、栈帧、操作数栈、局部变量表的作用。</p>
+<h4 id="native-method-stack本地方法栈">native method stack（本地方法栈）</h4>
+<p>本地方法栈与JAVA虚拟机栈的作用非常相似，其区别时JAVA虚拟机栈为虚拟机执行JAVA方法服务，而本地方法栈则是为虚拟机使用到的Native方法服务。甚至有的虚拟机实现（例如：HotSpot）直接就把本地方法栈和JAVA虚拟机栈合二为一。与JAVA虚拟机栈一样，本地方法栈区域也会抛出StackOverflowError和OutOfMemoryError异常</p>
+<h4 id="heap堆">heap（堆）</h4>
+<p>JAVA堆时JAVA虚拟机所管理的内存中最大的一块，JAVA堆是被所有线程共享的一块内存区域，在虚拟机启动是创建。此对象唯一的目的就是存放对象的实例，几乎所有的对象实例都在这里分配内存。JAVA堆也是垃圾回收器管理的主要区域，因此很多时候也被称为**“GC堆”**。</p>
+<p>JAVA虚拟机规范中规定，对这个区域规定了一种异常状况：</p>
+<ul>
+<li>如果在堆中没有内存完成实例分配，并且堆也无法在扩展时，将会抛出OutOfMenoryError异常</li>
+</ul>
+<p><strong>模拟抛出OutOfMemoryError异常</strong></p>
+<p>JAVA堆的OOM异常是开发中最常见的异常情况，通过以下的参数可以控制JAVA堆内存区域的大小</p>
+<ul>
+<li>-Xms256m</li>
+<li>-Xmx256m</li>
+</ul>
+<pre><code class="language-java">package com.example.jvm.outofmemory.heap;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author zhangbojie
+ * @create 2022-12-16 14:30
+ **/
+public class OutOfMemoryErrorTest {
+
+    public static void main(String[] args) {
+        List&lt;String&gt; strings = new ArrayList&lt;&gt;();
+        for (;;) {
+            strings.add(&quot;张三&quot;);
+        }
+    }
+    
+}
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://zhangbojie-cn.github.io/post-images/1673155933697.png" alt="" loading="lazy"></figure>
+<h4 id="method-area方法区">method area（方法区）</h4>
+<p>方法区与JAVA堆一样，是各线程共享的内存区域，并且方法区也是在虚拟机启动时创建，它存储每个类的结构信息，例如：运行时常量池、字段、构造方法和普通方法的字节码内容，还包括一些在类、实例、接口初始化时用到的特殊方法。JAVA虚拟机规范规定方法区是JAVA堆的一个逻辑组成部分，但是虚拟机实现可以选择在这块内存区域不实现垃圾回收与压缩。</p>
+<p>JAVA虚拟机规范中规定，对这个区域规定了一种异常状况：</p>
+<ul>
+<li>当方法区无法满足内存分配需求时，将会抛出OutOfMenoryError异常</li>
+</ul>
+<h4 id="runtime-contanst-pool运行时常量池">runtime contanst pool（运行时常量池）</h4>
+<p>运行时常量池时方法区的一部分，Class文件中除了有类的版本信息、字段、方法、接口等信息外，还有一项信息是常量池，用于存放编译器生成的各种字面量和符号引用，这部分内容将在类加载后存放到方法区的运行时常量池。运行时常量池相对于Class文件常量池的另外一个重要的特征是具备动态性，JAVA语言并不要求常量池一定只能在编译期产生，运行时也可能将新的常量放入池中。</p>
+<p>JAVA虚拟机规范中规定，对这个区域规定了一种异常状况：</p>
+<ul>
+<li>当常量池无法满足内存分配需求时，将会抛出OutOfMenoryError异常</li>
+</ul>
+<p><strong>模拟抛出OutOfMemoryError异常</strong></p>
+<p>由于运行时常量池也是方法区的一部分，所以要模拟OOM最简单得方式就是使用String.intern()这个Native方法。该方法得作用是如果常量池中已经包含一个等于此String对象得字符串，则返回代表池中这个字符串的String对象；否则，将此String对象包含的字符串添加到常量池中，并且返回此String对象的引用。由于运行时常量池是方法区域的一部分，可以使用以下的VM参数控制方法区的大小：</p>
+<ol>
+<li>JDK8以前（方法区实现称为<strong>永久代</strong>）
+<ul>
+<li>-XX:PremSize=10m</li>
+<li>-XX:MaxPremSize=10m</li>
+</ul>
+</li>
+<li>JDK8及以后（方法区实现称为<strong>元数据区</strong>）
+<ul>
+<li>-XX:MetaspaceSize=10m</li>
+<li>-XX:MaxMetaspaceSize=10m</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-java">package com.example.jvm.outofmemory.methodarea;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author zhangbojie
+ * @create 2022-12-16 14:53
+ **/
+public class OutOfMemoryErrorTest {
+
+    public static void main(String[] args) throws InterruptedException {
+        List&lt;String&gt; strings = new ArrayList&lt;&gt;();
+        int i = 1;
+        while (true) {
+            strings.add(String.valueOf(i++).intern());
+        }
+    }
+
+}
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://zhangbojie-cn.github.io/post-images/1673155943198.png" alt="" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#jvm%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BAjvm-runtime-data-areas">JVM运行时数据区（JVM Runtime Data Areas）</a><br>
+*<br>
+*<br>
+* <a href="#program-counter%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">program counter（程序计数器）</a><br>
+* <a href="#java-virtual-machine-stackjava%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">java virtual machine stack（JAVA虚拟机栈）</a><br>
+* <a href="#%E6%A0%88%E5%B8%A7">栈帧</a><br>
+* <a href="#native-method-stack%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">native method stack（本地方法栈）</a><br>
+* <a href="#heap%E5%A0%86">heap（堆）</a><br>
+* <a href="#method-area%E6%96%B9%E6%B3%95%E5%8C%BA">method area（方法区）</a><br>
+* <a href="#runtime-contanst-pool%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0">runtime contanst pool（运行时常量池）</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://zhangbojie-cn.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
